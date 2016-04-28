@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set +x
+
+WHITELIST=("fagerheimen.no")
+
+cd "$HOME/Dropbox"
+
+if [[ "`ls .dropbox | wc -l`" = "0" ]]; then
+    echo "dropbox isn't configured yet; please configure dropbox..."
+    "$HOME/.dropbox-dist/dropboxd" &
+    sleep 10
+    exit 1
+fi
+
+dropbox.py running
+if [[ $? ]] ; then
+    if [[ "`dropbox.py status | grep "isn't" | wc -l`" -ne "0" ]] ; then
+        echo "dropbox isn't responding..."
+        dropbox.py stop
+        dropbox.py start
+        exit 1
+    fi
+else
+    echo "dropbox isn't running..."
+    dropbox.py start
+    exit 1
+fi
+
+for ITEM in ${WHITELIST[*]}
+do
+    if [[ "$ITEM" == "Apps" ]] || [[ "$ITEM" == "Apper" ]] ; then
+        continue;
+    fi
+    ITEM_LOWERCASE="`echo $ITEM | tr '[:upper:]' '[:lower:]'`"
+    #echo "checking if $ITEM_LOWERCASE should be removed from blacklist"
+    if [[ "`dropbox.py exclude | tr '[:upper:]' '[:lower:]' | grep "^$ITEM_LOWERCASE$" | wc -l`" -gt "0" ]] ; then
+        dropbox.py exclude remove "$ITEM"
+    fi
+done
+
+for DIR_ITEM in *; do
+    if [[ "$DIR_ITEM" == "Apps" ]] || [[ "$DIR_ITEM" == "Apper" ]] ; then
+        continue;
+    fi
+    SHOULD_EXCLUDE=1
+    DIR_ITEM_LOWERCASE="`echo $DIR_ITEM | tr '[:upper:]' '[:lower:]'`"
+    #echo "checking if $DIR_ITEM_LOWERCASE should be added to blacklist"
+    for ITEM in ${WHITELIST[*]}
+    do
+        ITEM_LOWERCASE="`echo $ITEM | tr '[:upper:]' '[:lower:]'`"
+        if [[ "$ITEM_LOWERCASE" == "$DIR_ITEM_LOWERCASE" ]] ; then
+            SHOULD_EXCLUDE=0
+            break
+        fi
+    done
+    if [[ "$SHOULD_EXCLUDE" -eq "1" ]] ; then
+        dropbox.py exclude add "$DIR_ITEM"
+    fi
+done
