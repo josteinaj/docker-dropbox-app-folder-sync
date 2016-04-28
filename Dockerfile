@@ -3,12 +3,12 @@ FROM mhimmer/dropbox
 RUN apt-get update && apt-get install -y vim screen
 
 COPY src/dropbox-whitelist /usr/bin/dropbox-whitelist
-RUN mkdir -p /root/Dropbox/Apps/Blot && \
+RUN mkdir -p /root/Dropbox/Apper/Blot && \
     mkdir -p /root/Dropbox/fagerheimen.no && \
     mkdir -p /root/Hjemmeside/filer && \
     mkdir -p /root/Hjemmeside/tekst && \
-    ln --symbolic /root/Hjemmeside/filer /root/Dropbox/Apps/Blot/public && \
-    ln --symbolic /root/Hjemmeside/tekst /root/Dropbox/Apps/Blot/text && \
+    ln --symbolic /root/Hjemmeside/filer /root/Dropbox/Apper/Blot/public && \
+    ln --symbolic /root/Hjemmeside/tekst /root/Dropbox/Apper/Blot/text && \
     ln --symbolic /root/Hjemmeside/filer /root/Dropbox/fagerheimen.no/filer && \
     ln --symbolic /root/Hjemmeside/tekst /root/Dropbox/fagerheimen.no/tekst
 
