@@ -32,7 +32,8 @@ RUN mkdir -p /root/Dropbox/Apper/Blot && \
     ln --symbolic /root/Hjemmeside/filer /root/Dropbox/fagerheimen.no/filer && \
     ln --symbolic /root/Hjemmeside/tekst /root/Dropbox/fagerheimen.no/tekst
 
-RUN crontab -l | { cat; echo "* * * * * /usr/bin/dropbox-whitelist >>/var/log/dropbox-whitelist.log 2>&1"; } | crontab -
+RUN crontab -l | { cat; echo "* * * * * /usr/bin/dropbox-whitelist >>/var/log/dropbox-whitelist.log 2>&1\n*/5 * * * * /usr/bin/dropbox.py stop >>/var/log/dropbox.py.log 2>&1 && /usr/bin/
+dropbox.py start >>/var/log/dropbox.py.log 2>&1"; } | crontab -
 RUN touch /var/log/dropbox-whitelist.log
 
 CMD service cron start ; /usr/bin/dropbox-whitelist ; tail -f /var/log/dropbox-whitelist.log

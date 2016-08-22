@@ -1,5 +1,7 @@
 # docker-dropbox-app-folder-sync
 
+[![](https://images.microbadger.com/badges/image/josteinaj/docker-dropbox-app-folder-sync.svg)](https://microbadger.com/images/josteinaj/docker-dropbox-app-folder-sync "Get your own image badge on microbadger.com")
+
 Docker image to keep an App folder in sync with a normal folder in Dropbox.
 
 It's kind of a hack and it's currently configured to map a couple of folders
